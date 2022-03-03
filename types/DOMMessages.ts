@@ -5,6 +5,8 @@ export type DOMMessage = {
 export type DOMMessageResponse = {
    title: string;
    url: string;
+   websiteName: string;
    description: string;
    headlines: string[];
+   favicon: string;
 }

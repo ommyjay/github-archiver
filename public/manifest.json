@@ -3,7 +3,7 @@
   "description": "Chrome extension to archive your favorite pages on the web.",
   "version": "1.0",
   "manifest_version": 3,
-  "homepage_url": "http://github.com/ommyjay",
+  "homepage_url": "http://github.com/ommyjay/github-archiver",
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup",

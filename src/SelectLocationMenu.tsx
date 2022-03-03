@@ -3,10 +3,11 @@ import { Button, SelectMenu } from "evergreen-ui";
 
 interface ISelectLocationMenuProps {
    repositoryLocations: string[];
+   selectedItems: (string | number)[];
+   setSelectedItems: React.Dispatch<React.SetStateAction<(string | number)[]>>
 }
 
-export function SelectLocationMenu({ repositoryLocations }: ISelectLocationMenuProps) {
-
+export function SelectLocationMenu({ repositoryLocations, selectedItems, setSelectedItems }: ISelectLocationMenuProps) {
    const [options] = React.useState(
       repositoryLocations.map(
          (label: string) => ({
@@ -15,63 +16,60 @@ export function SelectLocationMenu({ repositoryLocations }: ISelectLocationMenuP
          })
       )
    );
-   const [selectedItemsState, setSelectedItems] = React.useState<
-      (string | number)[]
-   >([]);
-   const [selectedItemNamesState, setSelectedItemNames] = React.useState<
+   const [selectedItemMessage, setSelectedItemMessage] = React.useState<
       string | null
    >(null);
-   console.log('selectedItemsState :>> ', selectedItemsState);
-   console.log('selectedItemNamesState :>> ', selectedItemNamesState);
+   console.log('selectedItems :>> ', selectedItems);
+   console.log('selectedItemMessage :>> ', selectedItemMessage);
    return (
       <SelectMenu
          width={240}
          isMultiSelect
          title="Select multiple location"
          options={options}
-         selected={selectedItemsState as any}
+         selected={selectedItems as any}
          onSelect={(item) => {
-            const selected = [...selectedItemsState, item.value];
-            const selectedItems = selected;
-            const selectedItemsLength = selectedItems.length;
+            const selected = [...selectedItems, item.value];
+            const currentSelected = selected;
+            const selectedItemsLength = currentSelected.length;
             let selectedNames = "";
             if (selectedItemsLength === 0) {
                selectedNames = "";
             } else if (selectedItemsLength === 1) {
-               selectedNames = selectedItems.toString();
+               selectedNames = currentSelected.toString();
             } else if (selectedItemsLength > 1) {
-               const formatedSelection = selectedItems.reduce((previousValue, currentValue, currentIndex) => {
-                  return previousValue + (currentIndex === selectedItems.length - 1 ? ' & ' : ', ') + currentValue;
+               const formatedSelection = currentSelected.reduce((previousValue, currentValue, currentIndex) => {
+                  return previousValue + (currentIndex === currentSelected.length - 1 ? ' and ' : ', ') + currentValue;
                });
-               selectedNames = formatedSelection + " Selected";
+               selectedNames = `${formatedSelection}`;
             }
-            setSelectedItems(selectedItems);
-            setSelectedItemNames(selectedNames);
+            setSelectedItems(currentSelected);
+            setSelectedItemMessage(selectedNames);
          }}
          onDeselect={(item) => {
-            const deselectedItemIndex = selectedItemsState.indexOf(item.value);
-            const selectedItems = selectedItemsState.filter(
+            const deselectedItemIndex = selectedItems.indexOf(item.value);
+            const currentSelected = selectedItems.filter(
                (_item, i) => i !== deselectedItemIndex
             );
-            const selectedItemsLength = selectedItems.length;
+            const selectedItemsLength = currentSelected.length;
             let selectedNames = "";
             if (selectedItemsLength === 0) {
                selectedNames = "";
             } else if (selectedItemsLength === 1) {
-               selectedNames = selectedItems.toString();
+               selectedNames = currentSelected.toString();
             } else if (selectedItemsLength > 1) {
-               const formatedSelection = selectedItems.reduce((previousValue, currentValue, currentIndex) => {
-                  return previousValue + (currentIndex === selectedItems.length - 1 ? ' and ' : ', ') + currentValue;
+               const formatedSelection = currentSelected.reduce((previousValue, currentValue, currentIndex) => {
+                  return previousValue + (currentIndex === currentSelected.length - 1 ? ' and ' : ', ') + currentValue;
                });
-               selectedNames = formatedSelection + " Selected";
+               selectedNames = `${formatedSelection}`;
             }
 
-            setSelectedItems(selectedItems);
-            setSelectedItemNames(selectedNames);
+            setSelectedItems(currentSelected);
+            setSelectedItemMessage(selectedNames);
          }}
       >
-         <Button width={"100%"} overflowX="auto">
-            {selectedItemNamesState || "Select location..."}
+         <Button width={"100%"} overflowX="auto" textTransform="capitalize">
+            {selectedItemMessage || "Select Location"}
          </Button>
       </SelectMenu>
    );
