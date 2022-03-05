@@ -1,9 +1,9 @@
 {
-  "name": "GitHub Archiver",
+  "name": "GitHub BookMark",
   "description": "Chrome extension to archive your favorite pages on the web.",
   "version": "1.0",
   "manifest_version": 3,
-  "homepage_url": "http://github.com/ommyjay/github-archiver",
+  "homepage_url": "http://github.com/ommyjay/github-bookmark",
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup",
@@ -15,7 +15,8 @@
     "128": "logo192.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
@@ -23,5 +24,10 @@
   }],
   "background": {
     "service_worker": "./static/js/content.js"
+  },
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
   }
 }

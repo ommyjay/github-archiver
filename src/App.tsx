@@ -11,7 +11,7 @@ import {
   TextInputField,
   UnarchiveIcon,
 } from "evergreen-ui";
-import { useMutation, useQuery } from "react-query";
+import { QueryFunction, useMutation, useQuery } from "react-query";
 import "./App.css";
 import { SelectLocationMenu } from "./SelectLocationMenu";
 import { DOMMessage, DOMMessageResponse } from "../types/DOMMessages";
@@ -44,18 +44,30 @@ interface GitHubCommit {
   };
 }
 
+interface UserOptions {
+  githubUsername: string;
+  githubRepoName: string;
+  githubToken: string;
+}
+
 
 const config = {
   GITHUB_BASE_URL: process.env.GITHUB_BASE_URL || "https://api.github.com",
-  GITHUB_REPO_OWNER: process.env.GITHUB_REPO_OWNER || "ommyjay",
-  GITHUB_REPO_OWNER_EMAIL: process.env.GITHUB_REPO_OWNER_EMAIL || "ommyjay@gmail.com",
-  GITHUB_REPO_NAME: process.env.GITHUB_REPO_NAME || 'stuff',
   GITHUB_REPO_DEFAULT_FILE: process.env.GITHUB_REPO_DEFAULT_FILE || "README.md", //case sensitive
-  GITHUB_ACCESS_TOKEN: process.env.GITHUB_ACCESS_TOKEN
 }
 
-const retrieveRepositoryContents = async () => {
-  const repoUrl = `${config.GITHUB_BASE_URL}/repos/${config.GITHUB_REPO_OWNER}/${config.GITHUB_REPO_NAME}/contents`;
+const retrieveUserGitHubProfile = async (userName: string) => {
+  const repoUrl = `${config.GITHUB_BASE_URL}/users/${userName}`;
+  try {
+    const { data } = await axios.get(repoUrl)
+    return Promise.resolve(data);
+  } catch (error) {
+    console.log('error retrieveUserGitHubProfile:>> ', error);
+  }
+}
+
+const retrieveRepositoryContents = async (repoOwner: string, repoName: string) => {
+  const repoUrl = `${config.GITHUB_BASE_URL}/repos/${repoOwner}/${repoName}/contents`;
   try {
     const { data } = await axios.get(repoUrl)
     return Promise.resolve(data);
@@ -64,8 +76,8 @@ const retrieveRepositoryContents = async () => {
   }
 }
 
-const retrieveREADMEContents = async (readmeFilePath: string) => {
-  const repoUrl = `${config.GITHUB_BASE_URL}/repos/${config.GITHUB_REPO_OWNER}/${config.GITHUB_REPO_NAME}/contents/${readmeFilePath}`;
+const retrieveREADMEContents = async (repoOwner: string, repoName: string, readmeFilePath: string) => {
+  const repoUrl = `${config.GITHUB_BASE_URL}/repos/${repoOwner}/${repoName}/contents/${readmeFilePath}`;
   try {
     const { data } = await axios.get(repoUrl)
     return Promise.resolve(data);
@@ -75,13 +87,13 @@ const retrieveREADMEContents = async (readmeFilePath: string) => {
 }
 
 
-const postUpdatedContents = async (readmeFilePath: string, gitHubCommit: GitHubCommit) => {
-  const repoUrl = `${config.GITHUB_BASE_URL}/repos/${config.GITHUB_REPO_OWNER}/${config.GITHUB_REPO_NAME}/contents/${readmeFilePath}`;
+const postUpdatedContents = async (repoOwner: string, repoName: string, readmeFilePath: string, githubAccessToken: string, gitHubCommit: GitHubCommit) => {
+  const repoUrl = `${config.GITHUB_BASE_URL}/repos/${repoOwner}/${repoName}/contents/${readmeFilePath}`;
   try {
     const { data } = await axios.put(repoUrl, gitHubCommit, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `token ${config.GITHUB_ACCESS_TOKEN}`,
+        Authorization: `token ${githubAccessToken}`,
       },
     })
     return Promise.resolve(data);
@@ -94,12 +106,12 @@ function App() {
   const [domContentResponse, setDomContentResponse] = React.useState<DOMMessageResponse>({
     title: '',
     description: '',
-    headlines: [],
+    headlines: '',
     url: '',
     websiteName: '',
-    favicon: '' as any
+    favicon: '' as any,
   });
-
+  const [userOptions, setUserOptions] = React.useState<UserOptions>({ githubUsername: '', githubRepoName: '', githubToken: '' });
   React.useEffect(() => {
     /**
      * We can't use "chrome.runtime.sendMessage" for sending messages from React.
@@ -115,10 +127,16 @@ function App() {
        *
        * The runtime.onMessage event is fired only when title is missing.
        */
+      console.log('tabs :>> ', tabs[0]);
       if (!domContentResponse.title) {
         chrome.tabs.sendMessage(
           tabs[0].id || 0,
-          { type: 'GET_DOM' } as DOMMessage,
+          {
+            type: 'GET_DOM',
+            favIconUrl: tabs[0].favIconUrl,
+            url: tabs[0].url,
+            title: tabs[0].title
+          } as DOMMessage,
           (response: DOMMessageResponse) => {
             setDomContentResponse(response)
           });
@@ -127,27 +145,44 @@ function App() {
     });
   });
 
-  const { data: repo } = useQuery('repo', retrieveRepositoryContents)
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === "production") {
+      chrome.storage.sync.get({
+        githubUsername: 'githubUsername',
+        githubRepoName: 'githubRepoName',
+        githubToken: 'githubToken'
+      }, (options: any) => setUserOptions(options))
+    }
+  }, []);
+  const { data: userGitHubTokenProfile } = useQuery(['github-profile'],
+    () => retrieveUserGitHubProfile(userOptions.githubUsername),
+    { enabled: userOptions.githubUsername ? true : false })
+  const { data: repo } = useQuery(['repo'],
+    () => retrieveRepositoryContents(userOptions.githubUsername, userOptions.githubRepoName),
+    { enabled: userOptions.githubUsername && userOptions.githubRepoName ? true : false })
   const [selectedItems, setSelectedItems] = React.useState<
     (string | number)[]
   >([]);
   const [archivingStatus, setArchivingStatus] = React.useState<boolean>(false);
   const mutation = useMutation(postUpdatedContents as any)
-
+  console.log('userGitHubTokenProfile :>> ', userGitHubTokenProfile);
   console.log('mutation :>> ', mutation.data);
   console.log('domContentResponse :>> ', domContentResponse);
+  console.log('userOptions :>> ', userOptions);
 
   const handleSubmission = async () => {
     setArchivingStatus(true);
     if (selectedItems.length === 0) {
-      const { content, sha } = await retrieveREADMEContents(config.GITHUB_REPO_DEFAULT_FILE)
+      const { content, sha } = await retrieveREADMEContents(userOptions.githubUsername,
+        userOptions.githubRepoName, config.GITHUB_REPO_DEFAULT_FILE)
       const decodedContent = decodeURIComponent(
         escape(window.atob(content))
       );
-      const dataToAppend = `![${domContentResponse.title}](${domContentResponse.favicon}) [${domContentResponse.title}](${domContentResponse.url}) \n> ${domContentResponse.description} \n`;
+      const dataToAppend = `<img src="${domContentResponse.favicon}" alt="${domContentResponse.title}" style="width:15px;margin-bottom: -2px;"/> [${domContentResponse.title}](${domContentResponse.url}) \n> ${domContentResponse.description} \n`;
       console.log('dataToAppend :>> ', dataToAppend);
       // append data in the front
       const appendedContent = appendDataBefore(dataToAppend, decodedContent);
+      console.log('appendedContent :>> ', appendedContent);
       const encodedAppendedContent = window.btoa(
         unescape(encodeURIComponent(appendedContent))
       );
@@ -156,11 +191,11 @@ function App() {
         content: encodedAppendedContent,
         message: `✨ NEW: Archived page from ${domContentResponse.websiteName}`,
         committer: {
-          name: config.GITHUB_REPO_OWNER,
-          email: config.GITHUB_REPO_OWNER_EMAIL,
+          name: userOptions.githubUsername,
+          email: `${userOptions.githubUsername}@gitbookmark.io`,
         },
       }
-      postUpdatedContents(config.GITHUB_REPO_DEFAULT_FILE, gitHubCommit)
+      postUpdatedContents(userOptions.githubUsername, userOptions.githubRepoName, config.GITHUB_REPO_DEFAULT_FILE, userOptions.githubToken, gitHubCommit)
     }
 
   }
@@ -168,7 +203,7 @@ function App() {
   return (
     <div className="app">
       <Heading padding={16} borderBottom={"1px dashed rgb(223, 226, 229)"}>
-        GitHub Archiver
+        GitHub BookMark
       </Heading>
       <Pane padding={16} background="tint1" flex="1">
         <TextInputField
@@ -212,7 +247,7 @@ function App() {
           onClick={() => handleSubmission()}
           isLoading={archivingStatus}
         >
-          Archive
+          BookMark
         </Button>
         <Button marginY={8} marginRight={12} /* iconBefore={CrossIcon} */>
           Cancel

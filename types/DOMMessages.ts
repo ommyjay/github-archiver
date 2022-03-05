@@ -1,5 +1,8 @@
 export type DOMMessage = {
-   type: 'GET_DOM'
+   type: 'GET_DOM',
+   title: string;
+   url: string;
+   favIconUrl: string;
 }
 
 export type DOMMessageResponse = {
@@ -7,6 +10,6 @@ export type DOMMessageResponse = {
    url: string;
    websiteName: string;
    description: string;
-   headlines: string[];
+   headlines: string;
    favicon: string;
 }

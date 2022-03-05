@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <title>Options | Like on GitHub</title>
+   <meta charset="UTF-8">
+   <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+   <style>
+      body {
+         font-size: 75%;
+         -webkit-font-smoothing: antialiased;
+         font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+         padding-bottom: 16px;
+         padding-left: 16px;
+         padding-right: 16px;
+         padding-top: 16px;
+         box-sizing: border-box;
+         background: rgb(250, 251, 255);
+         flex: 1 1 0%;
+      }
+   </style>
+
+</head>
+
+
+
+
+<body>
+   <form class="w-full max-w-lg">
+      <div class="flex flex-wrap -mx-3 mb-6">
+         <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="github-username">
+               GitHub Username
+            </label>
+            <input
+               class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+               id="github-username" type="text" placeholder="">
+         </div>
+         <div class="w-full md:w-1/2 px-3">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="github-repo-name">
+               GitHub Repo Name
+            </label>
+            <input
+               class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+               id="github-repo-name" type="text" placeholder="">
+         </div>
+      </div>
+      <div class="flex flex-wrap -mx-3 mb-6">
+         <div class="w-full px-3">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="github-user-token">
+               GitHub Token
+            </label>
+            <input
+               class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+               id="github-user-token" type="password" placeholder="">
+            <p class="text-gray-600 text-xs italic">Instruction on how to generate a GitHub Token are found <a
+                  class="font-bold"
+                  href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">here</a>.
+            </p>
+         </div>
+      </div>
+      <button type="submit" id="save"
+         class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
+   </form>
+
+   <div
+      class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+         <!--          <div class="sm:flex sm:items-start">
+            <div
+               class="h-6 w-6 text-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+               stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            </div>
+         </div> -->
+      </div>
+      <script src=options.js></script>
+
+</body>
+
+</html>

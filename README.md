@@ -1,6 +1,6 @@
-# ![Logo](/public/logo.svg) GitHub Archiver v1.0
+# ![Logo](/public/logo.svg) GitHub BookMark v1.0
 
-A Chrome Extension To Archive Your Favorite Pages On The Web.
+A Chrome Extension To BookMark Your Favorite Web Pages On Github.
 
 ## Authors
 

@@ -8,7 +8,7 @@ const appendDataBefore = (dataToAppend: any, content: any) => {
    // If the file is empty
    if (content.trim().length === 0) {
       content +=
-         "# today-i-liked \nContent that I liked. Saved using https://goo.gl/Wj595G \n";
+         "# today-i-liked \nContent that I liked. Saved using https://shorturl.at/styF9 \n";
    }
    const arr = content.split("###");
    // if the length of arr is 1, then it is the first time to append data
@@ -18,12 +18,12 @@ const appendDataBefore = (dataToAppend: any, content: any) => {
       content = arr.join("");
    } else {
       // if has not append data of currentDate, then append DateHeader
-      if (isCurrentDateExists(content)) {
+      if (!isCurrentDateExists(content)) {
          arr[0] += getDateHeader();
          arr[0] += dataToAppend;
       } else {
          // if already have date then append to that
-         arr[1] += dataToAppend;
+         arr[1] += `\n${dataToAppend}`;
       }
       content = arr.join("###");
    }
