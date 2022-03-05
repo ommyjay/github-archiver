@@ -24,7 +24,6 @@ function restore_options() {
       githubRepoName: 'githubRepoName',
       githubToken: 'githubToken'
    }, function (items) {
-      console.log('items :>> ', items);
       document.getElementById('github-username').value = items.githubUsername;
       document.getElementById('github-repo-name').value = items.githubRepoName;
       document.getElementById('github-user-token').value = items.githubToken;

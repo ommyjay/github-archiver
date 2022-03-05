@@ -87,7 +87,7 @@ const retrieveREADMEContents = async (repoOwner: string, repoName: string, readm
 }
 
 
-const postUpdatedContents = async (repoOwner: string, repoName: string, readmeFilePath: string, githubAccessToken: string, gitHubCommit: GitHubCommit) => {
+const postUpdatedContents = async ({ repoOwner, repoName, readmeFilePath, githubAccessToken, gitHubCommit }: any) => {
   const repoUrl = `${config.GITHUB_BASE_URL}/repos/${repoOwner}/${repoName}/contents/${readmeFilePath}`;
   try {
     const { data } = await axios.put(repoUrl, gitHubCommit, {
@@ -127,7 +127,6 @@ function App() {
        *
        * The runtime.onMessage event is fired only when title is missing.
        */
-      console.log('tabs :>> ', tabs[0]);
       if (!domContentResponse.title) {
         chrome.tabs.sendMessage(
           tabs[0].id || 0,
@@ -163,15 +162,11 @@ function App() {
   const [selectedItems, setSelectedItems] = React.useState<
     (string | number)[]
   >([]);
-  const [archivingStatus, setArchivingStatus] = React.useState<boolean>(false);
-  const mutation = useMutation(postUpdatedContents as any)
-  console.log('userGitHubTokenProfile :>> ', userGitHubTokenProfile);
-  console.log('mutation :>> ', mutation.data);
-  console.log('domContentResponse :>> ', domContentResponse);
-  console.log('userOptions :>> ', userOptions);
+  const [archivingStatus, setBookMarkingStatus] = React.useState<boolean>(false);
+  const mutation = useMutation(postUpdatedContents)
 
   const handleSubmission = async () => {
-    setArchivingStatus(true);
+    setBookMarkingStatus(true);
     if (selectedItems.length === 0) {
       const { content, sha } = await retrieveREADMEContents(userOptions.githubUsername,
         userOptions.githubRepoName, config.GITHUB_REPO_DEFAULT_FILE)
@@ -179,7 +174,6 @@ function App() {
         escape(window.atob(content))
       );
       const dataToAppend = `<img src="${domContentResponse.favicon}" alt="${domContentResponse.title}" style="width:15px;margin-bottom: -2px;"/> [${domContentResponse.title}](${domContentResponse.url}) \n> ${domContentResponse.description} \n`;
-      console.log('dataToAppend :>> ', dataToAppend);
       // append data in the front
       const appendedContent = appendDataBefore(dataToAppend, decodedContent);
       console.log('appendedContent :>> ', appendedContent);
@@ -189,13 +183,23 @@ function App() {
       const gitHubCommit = {
         sha,
         content: encodedAppendedContent,
-        message: `✨ NEW: Archived page from ${domContentResponse.websiteName}`,
+        message: `✨ NEW: BookMarked page from ${domContentResponse.websiteName}`,
         committer: {
           name: userOptions.githubUsername,
           email: `${userOptions.githubUsername}@gitbookmark.io`,
         },
       }
-      postUpdatedContents(userOptions.githubUsername, userOptions.githubRepoName, config.GITHUB_REPO_DEFAULT_FILE, userOptions.githubToken, gitHubCommit)
+      const data = {
+        repoOwner: userOptions.githubUsername,
+        repoName: userOptions.githubRepoName,
+        readmeFilePath: config.GITHUB_REPO_DEFAULT_FILE,
+        githubAccessToken: userOptions.githubToken,
+        gitHubCommit
+      }
+      const result = await mutation.mutateAsync(data)
+      if (result) {
+        setBookMarkingStatus(false);
+      }
     }
 
   }
@@ -205,7 +209,7 @@ function App() {
       <Heading padding={16} borderBottom={"1px dashed rgb(223, 226, 229)"}>
         GitHub BookMark
       </Heading>
-      <Pane padding={16} background="tint1" flex="1">
+      {!mutation.isSuccess && <Pane padding={16} background="tint1" flex="1">
         <TextInputField
           spellCheck
           label="Title"
@@ -249,19 +253,22 @@ function App() {
         >
           BookMark
         </Button>
-        <Button marginY={8} marginRight={12} /* iconBefore={CrossIcon} */>
+        <Button marginY={8} marginRight={12} onClick={() => window.close()}>
           Cancel
         </Button>
-      </Pane>
-      {/*       <Pane paddingY={32} paddingX={16}>
+      </Pane>}
+      {mutation.isSuccess && <Pane paddingY={16} paddingX={16}>
         <Alert
           intent="success"
-          title=" Page Archived"
+          title=" BookMarked!"
         >
-          Click Outside The Popup To Close (Auto close after 5 secs)
+          {`Click anywhere outside this popup to Close.`}
         </Alert>
-      </Pane>
- */}
+        <Button marginTop={16} onClick={() => window.close()}>
+          Close
+        </Button>
+      </Pane>}
+
     </div>
   );
 }

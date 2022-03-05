@@ -19,8 +19,6 @@ export function SelectLocationMenu({ repositoryLocations, selectedItems, setSele
    const [selectedItemMessage, setSelectedItemMessage] = React.useState<
       string | null
    >(null);
-   console.log('selectedItems :>> ', selectedItems);
-   console.log('selectedItemMessage :>> ', selectedItemMessage);
    return (
       <SelectMenu
          width={240}
