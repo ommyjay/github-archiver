@@ -20,15 +20,14 @@
          flex: 1 1 0%;
       }
    </style>
-   <script src=options.js></script>
 
 </head>
 
 
 
 
-<body>
-   <form class="w-full max-w-lg" style="height: 100vh;">
+<body style="height: 100vh;">
+   <form class="w-full max-w-lg">
       <div class="flex flex-wrap -mx-3 mb-6">
          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="github-username">
@@ -61,36 +60,38 @@
             </p>
          </div>
       </div>
-      <button type="submit" id="save"
+      <button type="submit" id="save-button"
          class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
-      <div class="mt-10 flex justify-between">
-         <p class="text-gray-600 text-xs font-bold">DEFAULTS</p>
-         <p class="text-gray-600 text-sm">
-            Keyboard Shortcuts
-            <br>
-            <span class="text-gray-600 text-xs italic">Setting your <a style="text-decoration:underline"
-                  href="https://obie.ai/blog/how-to-add-and-remove-custom-keyboard-shortcuts-and-hotkeys-for-a-chrome-extension-in-5-seconds-flat">own.</a>
-            </span>
-         </p>
-         <div>
-            <div>
-               <h3 class="text-sm text-gray-700">
-                  BookMark Page
-               </h3>
-               <p class="mt-1 text-sm text-gray-500">Alt+S</p>
-            </div>
-            <div>
-               <h3 class="text-sm text-gray-700">
-                  Open / Close
-               </h3>
-               <p class="mt-1 text-sm text-gray-500 ">Alt+M</p>
-            </div>
-         </div>
-      </div>
+
+
 
 
    </form>
-
+   <div class="mt-10 flex justify-between w-full max-w-lg pt-10" style="color: #f7fafc">
+      <p class="text-gray-600 text-xs font-bold">DEFAULTS</p>
+      <p class="text-gray-600 text-sm">
+         Keyboard Shortcuts
+         <br>
+         <span class="text-gray-600 text-xs italic">Setting your <a style="text-decoration:underline"
+               href="https://obie.ai/blog/how-to-add-and-remove-custom-keyboard-shortcuts-and-hotkeys-for-a-chrome-extension-in-5-seconds-flat">own.</a>
+         </span>
+      </p>
+      <div>
+         <div>
+            <h3 class="text-sm text-gray-700">
+               BookMark Page
+            </h3>
+            <p class="mt-1 text-sm text-gray-500">Alt+Shift+S</p>
+         </div>
+         <div>
+            <h3 class="text-sm text-gray-700">
+               Open / Close
+            </h3>
+            <p class="mt-1 text-sm text-gray-500 ">Alt+Shift+M</p>
+         </div>
+      </div>
+   </div>
+   <script src=options.js></script>
 </body>
 
 </html>

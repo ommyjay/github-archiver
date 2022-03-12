@@ -30,5 +30,5 @@ function restore_options() {
    });
 }
 document.addEventListener('DOMContentLoaded', restore_options);
-document.getElementById('save').addEventListener('click',
+document.getElementById('save-button').addEventListener('click',
    save_options);

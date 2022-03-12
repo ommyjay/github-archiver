@@ -6,8 +6,10 @@ import {
   FormField,
   Heading,
   KeyOptionIcon,
+  KeyShiftIcon,
   Pane,
   Strong,
+  Text,
   TextareaField,
   TextInputField,
 } from "evergreen-ui";
@@ -191,7 +193,6 @@ function App() {
     React.useState<boolean>(true);
 
   React.useEffect(() => {
-    console.log(" userOptions.githubUsername :>> ", userOptions.githubUsername);
     if (
       !userOptions.githubUsername ||
       (userOptions.githubUsername === "githubUsername" &&
@@ -203,10 +204,26 @@ function App() {
     }
   }, []);
 
+
+  const saveOptions = () => {
+    if (!userOptions.githubUsername || !userOptions.githubRepoName || !userOptions.githubToken) {
+      setHasAuthentications(false);
+    }
+    else {
+      chrome.storage.sync.set({
+        githubUsername: userOptions.githubUsername,
+        githubRepoName: userOptions.githubRepoName,
+        githubToken: userOptions.githubToken
+      }, function () {
+        setHasAuthentications(true)
+      });
+    }
+  }
+
   const { data: userGitHubTokenProfile } = useQuery(
     ["github-profile"],
     () => retrieveUserGitHubProfile(userOptions.githubUsername),
-    { enabled: userOptions.githubUsername ? true : false }
+    { enabled: userOptions.githubUsername && hasAuthentications ? true : false }
   );
   const { data: repo } = useQuery(
     ["repo"],
@@ -217,7 +234,7 @@ function App() {
       ),
     {
       enabled:
-        userOptions.githubUsername && userOptions.githubRepoName ? true : false,
+        userOptions.githubUsername && userOptions.githubRepoName && hasAuthentications ? true : false,
     }
   );
   const [selectedItems, setSelectedItems] = React.useState<(string | number)[]>(
@@ -308,7 +325,7 @@ function App() {
                   hint="Github Repo Directory"
                   label="Save In"
                   flex="1"
-                  width="100%"
+                  width="300%"
                 >
                   <SelectLocationMenu
                     repositoryLocations={repo
@@ -334,8 +351,13 @@ function App() {
                   >
                     <KeyOptionIcon size={10} />
                     <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                      <Strong size={10} color="primary">
-                        + S
+                      <Strong size={300} color="primary">
+                        +
+                      </Strong>
+                    </div>
+                    <KeyShiftIcon size={10} marginLeft={4} />
+                    <div style={{ marginLeft: "4px", fontSize: 11 }}>
+                      <Strong size={300} color="primary">+ S
                       </Strong>
                     </div>
                   </div>
@@ -360,7 +382,13 @@ function App() {
                   >
                     <KeyOptionIcon size={10} />
                     <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                      <Strong size={10}>+ M</Strong>
+                      <Strong size={300} color="primary">
+                        +
+                      </Strong>
+                    </div>
+                    <KeyShiftIcon size={10} marginLeft={4} />
+                    <div style={{ marginLeft: "4px", fontSize: 11 }}>
+                      <Strong size={300}>+ M</Strong>
                     </div>
                   </div>
                 )}
@@ -381,11 +409,65 @@ function App() {
           )}
         </div>
       ) : (
-        <div>
-          <h1>Start here</h1>
-        </div>
-      )}
-    </div>
+        <Pane paddingY={16} paddingX={64} background="tint1" flex="1">
+          <TextInputField
+            spellCheck
+            label="Github Username"
+            value={userOptions.githubUsername}
+            onChange={(item: React.ChangeEvent<HTMLInputElement>) =>
+              setUserOptions({
+                ...userOptions,
+                githubUsername: item.target.value,
+              })
+            }
+            isInvalid={!userOptions.githubUsername}
+          />
+          <TextInputField
+            spellCheck
+            label="Github Repo Name"
+            value={userOptions.githubRepoName}
+            onChange={(item: React.ChangeEvent<HTMLInputElement>) =>
+              setUserOptions({
+                ...userOptions,
+                githubRepoName: item.target.value,
+              })
+            }
+            isInvalid={!userOptions.githubRepoName}
+          />
+          <TextInputField
+            spellCheck
+            label="Github Token"
+            hint={
+              <Text color="muted">
+                <a
+                  className="font-bold"
+                  href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank">Generating a GitHub Token</a>
+              </Text>
+
+            }
+            value={userOptions.githubToken}
+            onChange={(item: React.ChangeEvent<HTMLInputElement>) =>
+              setUserOptions({
+                ...userOptions,
+                githubToken: item.target.value,
+              })
+            }
+            isInvalid={!userOptions.githubToken}
+          />
+          <Button
+            marginY={8}
+            marginRight={12}
+            appearance="primary"
+            onClick={() => saveOptions()}
+            disabled={!userOptions.githubUsername || !userOptions.githubRepoName || !userOptions.githubToken}
+          >
+            Set Options
+
+          </Button>
+        </Pane>
+      )
+      }
+    </div >
   );
 }
 
