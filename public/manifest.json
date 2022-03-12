@@ -33,9 +33,9 @@
     "_execute_action": {
       "suggested_key": "Alt+M"
     },
-    "hello": {
-      "suggested_key": "Ctrl+Shift+P",
-      "description": "Say Hello"
+    "mark": {
+      "suggested_key": "Alt+S",
+      "description": "BookMark Page"
     }
   }
 }

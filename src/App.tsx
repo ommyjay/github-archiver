@@ -7,6 +7,7 @@ import {
   Heading,
   KeyOptionIcon,
   Pane,
+  Strong,
   TextareaField,
   TextInputField,
 } from "evergreen-ui";
@@ -176,33 +177,14 @@ function App() {
     }
   }, []);
 
-  function toggleDark() {
-    if (!document.body.getAttribute("data-ext-dark")) {
-      document.body.setAttribute("data-ext-dark", "true");
-      document.body.style.backgroundColor = "#000";
-      document.body.style.color = "#fff";
-    } else {
-      document.body.setAttribute("data-ext-dark", "false");
-      document.body.style.backgroundColor = "#fff";
-      document.body.style.color = "#000";
-    }
-  }
-
   React.useEffect(() => {
-    chrome.commands.onCommand.addListener((command) => {
-      if (command === "hello") {
-        console.log("Hello there!");
-      }
-    });
-
-    chrome.action.onClicked.addListener((tab) => {
-      console.log("tab :>> ", tab);
-      //TODO toggle dark mode in the tab
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id as number },
-        func: toggleDark,
+    if (process.env.NODE_ENV === "production") {
+      chrome.commands?.onCommand.addListener((command) => {
+        if (command === "mark") {
+          handleSubmission();
+        }
       });
-    });
+    }
   }, []);
 
   const { data: userGitHubTokenProfile } = useQuery(
@@ -322,11 +304,21 @@ function App() {
           <Button
             marginY={8}
             marginRight={12}
-            iconBefore={() => (
-              <>
-                <KeyOptionIcon />
-                <span>+ M</span>
-              </>
+            iconAfter={() => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: "5px",
+                }}
+              >
+                <KeyOptionIcon size={10} />
+                <div style={{ marginLeft: "4px", fontSize: 11 }}>
+                  <Strong size={10} color="primary">
+                    + S
+                  </Strong>
+                </div>
+              </div>
             )}
             appearance="primary"
             onClick={() => handleSubmission()}
@@ -334,7 +326,25 @@ function App() {
           >
             BookMark
           </Button>
-          <Button marginY={8} marginRight={12} onClick={() => window.close()}>
+          <Button
+            marginY={8}
+            marginRight={12}
+            onClick={() => window.close()}
+            iconAfter={() => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: "5px",
+                }}
+              >
+                <KeyOptionIcon size={10} />
+                <div style={{ marginLeft: "4px", fontSize: 11 }}>
+                  <Strong size={10}>+ M</Strong>
+                </div>
+              </div>
+            )}
+          >
             Cancel
           </Button>
         </Pane>
