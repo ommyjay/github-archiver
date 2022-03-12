@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-   <title>Options | Like on GitHub</title>
+   <title>Options | GitHub BookMark</title>
    <meta charset="UTF-8">
    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 
@@ -20,6 +20,7 @@
          flex: 1 1 0%;
       }
    </style>
+   <script src=options.js></script>
 
 </head>
 
@@ -27,7 +28,7 @@
 
 
 <body>
-   <form class="w-full max-w-lg">
+   <form class="w-full max-w-lg" style="height: 100vh;">
       <div class="flex flex-wrap -mx-3 mb-6">
          <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="github-username">
@@ -62,22 +63,33 @@
       </div>
       <button type="submit" id="save"
          class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
-   </form>
-
-   <div
-      class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-         <!--          <div class="sm:flex sm:items-start">
-            <div
-               class="h-6 w-6 text-green-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-               stroke-width="2">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+      <div class="mt-10 flex justify-between">
+         <p class="text-gray-600 text-xs font-bold">DEFAULTS</p>
+         <p class="text-gray-600 text-sm">
+            Keyboard Shortcuts
+            <br>
+            <span class="text-gray-600 text-xs italic">Setting your <a style="text-decoration:underline"
+                  href="https://obie.ai/blog/how-to-add-and-remove-custom-keyboard-shortcuts-and-hotkeys-for-a-chrome-extension-in-5-seconds-flat">own.</a>
+            </span>
+         </p>
+         <div>
+            <div>
+               <h3 class="text-sm text-gray-700">
+                  BookMark Page
+               </h3>
+               <p class="mt-1 text-sm text-gray-500">Alt+S</p>
             </div>
-         </div> -->
+            <div>
+               <h3 class="text-sm text-gray-700">
+                  Open / Close
+               </h3>
+               <p class="mt-1 text-sm text-gray-500 ">Alt+M</p>
+            </div>
+         </div>
       </div>
-      <script src=options.js></script>
+
+
+   </form>
 
 </body>
 

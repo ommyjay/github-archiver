@@ -187,6 +187,22 @@ function App() {
     }
   }, []);
 
+  const [hasAuthentications, setHasAuthentications] =
+    React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    console.log(" userOptions.githubUsername :>> ", userOptions.githubUsername);
+    if (
+      !userOptions.githubUsername ||
+      (userOptions.githubUsername === "githubUsername" &&
+        userOptions.githubRepoName === "githubRepoName")
+    ) {
+      setHasAuthentications(false);
+    } else {
+      setHasAuthentications(true);
+    }
+  }, []);
+
   const { data: userGitHubTokenProfile } = useQuery(
     ["github-profile"],
     () => retrieveUserGitHubProfile(userOptions.githubUsername),
@@ -255,109 +271,119 @@ function App() {
       <Heading padding={16} borderBottom={"1px dashed rgb(223, 226, 229)"}>
         GitHub BookMark
       </Heading>
-      {!mutation.isSuccess && (
-        <Pane padding={16} background="tint1" flex="1">
-          <TextInputField
-            spellCheck
-            label="Title"
-            //hint="Label for the archived link"
-            value={domContentResponse.title}
-            onChange={(item: React.ChangeEvent<HTMLInputElement>) =>
-              setDomContentResponse({
-                ...domContentResponse,
-                title: item.target.value,
-              })
-            }
-          />
-          <TextareaField
-            marginTop={"-16px"}
-            spellCheck
-            grammarly
-            label="Comment"
-            //hint="GitHub commit message"
-            value={domContentResponse.description}
-            onChange={(item: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setDomContentResponse({
-                ...domContentResponse,
-                description: item.target.value,
-              })
-            }
-          />
-          {repo && (
-            <FormField
-              marginTop={"-16px"}
-              paddingBottom={16}
-              hint="Github Repo Directory"
-              label="Save In"
-              flex="1"
-              width="100%"
-            >
-              <SelectLocationMenu
-                repositoryLocations={repo
-                  .filter((location: GitHubContent) => location.type === "dir")
-                  .map((location: GitHubContent) => location.name)}
-                selectedItems={selectedItems}
-                setSelectedItems={setSelectedItems}
+      {hasAuthentications ? (
+        <div>
+          {!mutation.isSuccess && (
+            <Pane padding={16} background="tint1" flex="1">
+              <TextInputField
+                spellCheck
+                label="Title"
+                //hint="Label for the archived link"
+                value={domContentResponse.title}
+                onChange={(item: React.ChangeEvent<HTMLInputElement>) =>
+                  setDomContentResponse({
+                    ...domContentResponse,
+                    title: item.target.value,
+                  })
+                }
               />
-            </FormField>
+              <TextareaField
+                marginTop={"-16px"}
+                spellCheck
+                grammarly
+                label="Comment"
+                //hint="GitHub commit message"
+                value={domContentResponse.description}
+                onChange={(item: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setDomContentResponse({
+                    ...domContentResponse,
+                    description: item.target.value,
+                  })
+                }
+              />
+              {repo && (
+                <FormField
+                  marginTop={"-16px"}
+                  paddingBottom={16}
+                  hint="Github Repo Directory"
+                  label="Save In"
+                  flex="1"
+                  width="100%"
+                >
+                  <SelectLocationMenu
+                    repositoryLocations={repo
+                      .filter(
+                        (location: GitHubContent) => location.type === "dir"
+                      )
+                      .map((location: GitHubContent) => location.name)}
+                    selectedItems={selectedItems}
+                    setSelectedItems={setSelectedItems}
+                  />
+                </FormField>
+              )}
+              <Button
+                marginY={8}
+                marginRight={12}
+                iconAfter={() => (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginLeft: "5px",
+                    }}
+                  >
+                    <KeyOptionIcon size={10} />
+                    <div style={{ marginLeft: "4px", fontSize: 11 }}>
+                      <Strong size={10} color="primary">
+                        + S
+                      </Strong>
+                    </div>
+                  </div>
+                )}
+                appearance="primary"
+                onClick={() => handleSubmission()}
+                isLoading={archivingStatus}
+              >
+                BookMark
+              </Button>
+              <Button
+                marginY={8}
+                marginRight={12}
+                onClick={() => window.close()}
+                iconAfter={() => (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginLeft: "5px",
+                    }}
+                  >
+                    <KeyOptionIcon size={10} />
+                    <div style={{ marginLeft: "4px", fontSize: 11 }}>
+                      <Strong size={10}>+ M</Strong>
+                    </div>
+                  </div>
+                )}
+              >
+                Cancel
+              </Button>
+            </Pane>
           )}
-          <Button
-            marginY={8}
-            marginRight={12}
-            iconAfter={() => (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginLeft: "5px",
-                }}
-              >
-                <KeyOptionIcon size={10} />
-                <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                  <Strong size={10} color="primary">
-                    + S
-                  </Strong>
-                </div>
-              </div>
-            )}
-            appearance="primary"
-            onClick={() => handleSubmission()}
-            isLoading={archivingStatus}
-          >
-            BookMark
-          </Button>
-          <Button
-            marginY={8}
-            marginRight={12}
-            onClick={() => window.close()}
-            iconAfter={() => (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginLeft: "5px",
-                }}
-              >
-                <KeyOptionIcon size={10} />
-                <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                  <Strong size={10}>+ M</Strong>
-                </div>
-              </div>
-            )}
-          >
-            Cancel
-          </Button>
-        </Pane>
-      )}
-      {mutation.isSuccess && (
-        <Pane paddingY={16} paddingX={16}>
-          <Alert intent="success" title=" BookMarked!">
-            {`Click anywhere outside this popup to Close.`}
-          </Alert>
-          <Button marginTop={16} onClick={() => window.close()}>
-            Close
-          </Button>
-        </Pane>
+          {mutation.isSuccess && (
+            <Pane paddingY={16} paddingX={16}>
+              <Alert intent="success" title=" BookMarked!">
+                {`Click anywhere outside this popup to Close.`}
+              </Alert>
+              <Button marginTop={16} onClick={() => window.close()}>
+                Close
+              </Button>
+            </Pane>
+          )}
+        </div>
+      ) : (
+        <div>
+          <h1>Start here</h1>
+        </div>
       )}
     </div>
   );
