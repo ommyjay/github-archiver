@@ -26,7 +26,7 @@ jobs:
           cd build
           ls -la
           tag=${{ steps.tag_version.outputs.new_tag }}
-          zip -r release.zip .
+          zip -r "${tag}release.zip" .
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "build/release.zip"
