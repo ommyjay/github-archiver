@@ -47,7 +47,7 @@ const config = {
   GITHUB_REPO_DEFAULT_FILE: process.env.GITHUB_REPO_DEFAULT_FILE || "README.md", //case sensitive
 };
 
-const retrieveUserGitHubProfile = async (userName: string) => {
+/* const retrieveUserGitHubProfile = async (userName: string) => {
   const repoUrl = `${config.GITHUB_BASE_URL}/users/${userName}`;
   try {
     const { data } = await axios.get(repoUrl);
@@ -55,7 +55,7 @@ const retrieveUserGitHubProfile = async (userName: string) => {
   } catch (error) {
     console.log("error retrieveUserGitHubProfile:>> ", error);
   }
-};
+}; */
 
 const retrieveRepositoryContents = async (
   repoOwner: string,
@@ -177,7 +177,7 @@ function App() {
         }
       });
     }
-  }, []);
+  });
 
   const [hasAuthentications, setHasAuthentications] =
     React.useState<boolean>(true);
@@ -192,7 +192,7 @@ function App() {
     } else {
       setHasAuthentications(true);
     }
-  });
+  }, [userOptions.githubUsername, userOptions.githubRepoName]);
 
 
   const saveOptions = () => {
