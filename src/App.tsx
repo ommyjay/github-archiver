@@ -182,7 +182,8 @@ function App() {
   const [hasAuthentications, setHasAuthentications] =
     React.useState<boolean>(true);
 
-  React.useEffect(() => {
+
+  const checkVerification = () => {
     if (
       !userOptions.githubUsername ||
       (userOptions.githubUsername === "githubUsername" &&
@@ -192,7 +193,11 @@ function App() {
     } else {
       setHasAuthentications(true);
     }
-  }, [userOptions.githubUsername, userOptions.githubRepoName]);
+  }
+
+  React.useEffect(() => {
+    checkVerification()
+  });
 
 
   const saveOptions = () => {
