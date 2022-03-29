@@ -36,16 +36,6 @@ interface GitHubContent {
   };
 }
 
-interface GitHubCommit {
-  sha: any;
-  content: string;
-  message: string;
-  committer: {
-    name: string;
-    email: string;
-  };
-}
-
 interface UserOptions {
   githubUsername: string;
   githubRepoName: string;
@@ -202,7 +192,7 @@ function App() {
     } else {
       setHasAuthentications(true);
     }
-  }, []);
+  });
 
 
   const saveOptions = () => {
@@ -220,11 +210,12 @@ function App() {
     }
   }
 
-  const { data: userGitHubTokenProfile } = useQuery(
-    ["github-profile"],
-    () => retrieveUserGitHubProfile(userOptions.githubUsername),
-    { enabled: userOptions.githubUsername && hasAuthentications ? true : false }
-  );
+  // TODO:retrieve user's github profile
+  /*   const { data: userGitHubTokenProfile } = useQuery(
+      ["github-profile"],
+      () => retrieveUserGitHubProfile(userOptions.githubUsername),
+      { enabled: userOptions.githubUsername && hasAuthentications ? true : false }
+    ); */
   const { data: repo } = useQuery(
     ["repo"],
     () =>
@@ -441,7 +432,7 @@ function App() {
               <Text color="muted">
                 <a
                   className="font-bold"
-                  href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank">Generating a GitHub Token</a>
+                  href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank" rel="noreferrer">Generating a GitHub Token</a>
               </Text>
 
             }
