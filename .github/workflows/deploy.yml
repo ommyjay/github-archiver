@@ -15,7 +15,11 @@ jobs:
           cache: "yarn"
       - run: yarn install
       - run: yarn build
-      - run: zip -r release.zip build
+      - name: Switch to Release Folder
+        run: |
+          cd build
+          ls -la
+      - run: zip -r release.zip .
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
