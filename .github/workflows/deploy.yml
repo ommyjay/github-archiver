@@ -21,18 +21,3 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GB_TOKEN }}
-
-      - name: Switch to Release Folder
-        run: |
-          cd build
-          ls -la
-          zip -r release${{ steps.tag_version.outputs.new_tag }}.zip .
-
-      - name: Release to GitHUb
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/release.zip"
-          token: ${{ secrets.GB_TOKEN }}
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
