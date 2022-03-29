@@ -25,11 +25,10 @@ jobs:
         run: |
           cd build
           ls -la
-          tag=${{ steps.tag_version.outputs.new_tag }}
-          zip -r "${tag}release.zip" .
+          zip -r "${{ steps.tag_version.outputs.new_tag }}.release.zip" .
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/${{ steps.tag_version.outputs.new_tag }}release.zip"
+          artifacts: "build/${{ steps.tag_version.outputs.new_tag }}.release.zip"
           token: ${{ secrets.GB_TOKEN }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
