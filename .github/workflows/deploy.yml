@@ -8,25 +8,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.Js 16
+      - name: Build and Release
         uses: actions/setup-node@v2
         with:
           node-version: 16
           cache: "yarn"
       - run: yarn install
       - run: yarn build
-      - name: Switch to Build Folder
-        run: |
-          cd build
-          ls -la
+      - run: zip -r release.zip build
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
+          github_token: ${{ secrets.GB_TOKEN }}
+      - uses: ncipollo/release-action@v1
         with:
+          artifacts: "release.zip"
+          token: ${{ secrets.GB_TOKEN }}
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
