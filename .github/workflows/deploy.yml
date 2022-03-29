@@ -13,13 +13,10 @@ jobs:
         with:
           node-version: 16
           cache: "yarn"
-      - name: Install dependencies
       - run: yarn install
-      - name: Build
       - run: yarn build
-      - name: Zip Build folder
       - run: zip -r release.zip build
-      - name: Upload Release
+
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "release.zip"
