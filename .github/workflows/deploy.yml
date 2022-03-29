@@ -15,14 +15,20 @@ jobs:
           cache: "yarn"
       - run: yarn install
       - run: yarn build
-
+      - name: Switch to Release Folder
+        run: |
+          cd build
+          ls -la
+          zip -r release.zip .
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GB_TOKEN }}
-
-      - name: Switch to Release Folder
-      - run: cd build
-      - run: ls -la
-      - run: zip -r release${{ steps.tag_version.outputs.new_tag }}.zip .
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/release.zip"
+          token: ${{ secrets.GB_TOKEN }}
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
