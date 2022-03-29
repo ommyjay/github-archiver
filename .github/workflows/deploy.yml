@@ -1,0 +1,26 @@
+name: Deploy
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.Js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "yarn"
+      - name: Install dependencies
+      - run: yarn install
+      - name: Build
+      - run: yarn build
+      - name: Zip Build folder
+      - run: zip -r release.zip build
+      - name: Upload Release
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release.zip"
+          token: ${{ secrets.GB_TOKEN }}
