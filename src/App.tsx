@@ -183,7 +183,7 @@ function App() {
     React.useState<boolean>(true);
 
 
-  const checkVerification = () => {
+  React.useEffect(() => {
     if (
       !userOptions.githubUsername ||
       (userOptions.githubUsername === "githubUsername" &&
@@ -193,11 +193,8 @@ function App() {
     } else {
       setHasAuthentications(true);
     }
-  }
-
-  React.useEffect(() => {
-    checkVerification()
-  });
+    // eslint-disable-next-line
+  }, []);
 
 
   const saveOptions = () => {
