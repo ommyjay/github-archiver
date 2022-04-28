@@ -12,4 +12,6 @@ A Chrome Extension To BookMark Your Favorite Web Pages On Github.
 
 
 ### TODO
+ - [ ] Fix keyboard shortcut
+ - [ ] Fix credentials autoload page
  - [ ] OS Native search
