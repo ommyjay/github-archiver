@@ -16,3 +16,6 @@ A Chrome Extension To BookMark Your Favorite Web Pages On Github.
  - [ ] Show error when bookmarking failed
  - [ ] Fix credentials autoload page
  - [ ] OS Native search
+ - [ ] Github App Authentication
+ - [ ] user bookmarked homepage per topics
+ - [ ] discover page; find bookmarked from community
