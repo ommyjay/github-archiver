@@ -169,7 +169,6 @@ function App() {
     }
   }, []);
 
-  React.useEffect(() => {
     if (process.env.NODE_ENV === "production") {
       chrome.commands?.onCommand.addListener((command) => {
         if (command === "mark") {
@@ -177,7 +176,6 @@ function App() {
         }
       });
     }
-  });
 
   const [hasAuthentications, setHasAuthentications] =
     React.useState<boolean>(true);
@@ -344,13 +342,7 @@ function App() {
                   >
                     <KeyOptionIcon size={10} />
                     <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                      <Strong size={300} color="primary">
-                        +
-                      </Strong>
-                    </div>
-                    <KeyShiftIcon size={10} marginLeft={4} />
-                    <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                      <Strong size={300} color="primary">+ S
+                      <Strong size={300} color="primary">+ B
                       </Strong>
                     </div>
                   </div>
@@ -374,12 +366,6 @@ function App() {
                     }}
                   >
                     <KeyOptionIcon size={10} />
-                    <div style={{ marginLeft: "4px", fontSize: 11 }}>
-                      <Strong size={300} color="primary">
-                        +
-                      </Strong>
-                    </div>
-                    <KeyShiftIcon size={10} marginLeft={4} />
                     <div style={{ marginLeft: "4px", fontSize: 11 }}>
                       <Strong size={300}>+ M</Strong>
                     </div>

@@ -29,11 +29,11 @@
   },
   "commands": {
     "_execute_action": {
-      "suggested_key": "Alt+Shift+M"
+      "suggested_key": "Alt+B"
     },
     "mark": {
-      "suggested_key": "Alt+Shift+S",
-      "description": "BookMark Page"
+      "suggested_key": "Alt+M",
+      "description": "BookMark"
     }
   }
 }
