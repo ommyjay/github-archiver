@@ -15,7 +15,7 @@ jobs:
           node-version: 16
       - name: Build
         run: |
-          export CI = true
+          export CI=true
           yarn
           yarn craco build
           zip -r dist.zip build
