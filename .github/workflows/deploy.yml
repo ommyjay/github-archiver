@@ -15,9 +15,8 @@ jobs:
           node-version: 16
       - name: Build
         run: |
-          export CI=true
           yarn
-          yarn craco build
+          CI=true yarn craco build
           zip -r dist.zip build
       - name: Upload & release
         uses: mnao305/chrome-extension-upload@v4.0.1
