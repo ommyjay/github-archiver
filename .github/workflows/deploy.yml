@@ -15,7 +15,6 @@ jobs:
           node-version: 16
       - name: Build
         run: |
-          yarn ci
           yarn
           yarn craco build
           zip -r dist.zip build
